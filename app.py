@@ -153,5 +153,38 @@ def dashboard():
         'alertas_estoque': alertas
     })
 
+@app.route('/api/produtos', methods=['GET'])
+def listar_produtos():
+    conn = get_db()
+    c = conn.cursor()
+    busca = request.args.get('busca', '')
+    categoria = request.args.get('categoria', '')
+    query = "SELECT * FROM produtos WHERE 1=1"
+    params = []
+    if busca:
+        query += " AND (nome LIKE ? OR codigo LIKE ?)"
+        params += [f'%{busca}%', f'%{busca}%']
+    if categoria:
+        query += " AND categoria = ?"
+        params.append(categoria)
+    query += " ORDER BY nome ASC"
+    c.execute(query, params)
+    produtos = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return jsonify(produtos)
+
+@app.route('/api/produtos', methods=['POST'])
+def criar_produto():
+    data = request.json
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('''INSERT INTO produtos (nome, categoria, preco, estoque, estoque_minimo, codigo, unidade)
+                 VALUES (?,?,?,?,?,?,?)''',
+              (data['nome'], data['categoria'], data['preco'], data['estoque'],
+               data.get('estoque_minimo', 10), data.get('codigo', ''), data.get('unidade', 'un')))
+    conn.commit()
+    produto_id = c.lastrowid
+    conn.close()
+    return jsonify({'id': produto_id, 'mensagem': 'Produto criado com sucesso!'})
 
 
