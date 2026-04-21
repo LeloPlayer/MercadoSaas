@@ -99,4 +99,59 @@ def init_db():
     conn.commit()
     conn.close()
 
+@app.route('/api/dashboard')
+def dashboard():
+    conn = get_db()
+    c = conn.cursor()
+    hoje = datetime.now().strftime('%Y-%m-%d')
+    mes = datetime.now().strftime('%Y-%m')
+
+    c.execute("SELECT COALESCE(SUM(total),0) FROM vendas WHERE criado_em LIKE ?", (hoje+'%',))
+    vendas_hoje = c.fetchone()[0]
+
+    c.execute("SELECT COALESCE(SUM(total),0) FROM vendas WHERE criado_em LIKE ?", (mes+'%',))
+    vendas_mes = c.fetchone()[0]
+
+    c.execute("SELECT COUNT(*) FROM vendas WHERE criado_em LIKE ?", (hoje+'%',))
+    num_vendas_hoje = c.fetchone()[0]
+
+    c.execute("SELECT COUNT(*) FROM produtos WHERE estoque <= estoque_minimo")
+    estoque_baixo = c.fetchone()[0]
+
+    c.execute("SELECT COUNT(*) FROM produtos")
+    total_produtos = c.fetchone()[0]
+
+    c.execute("SELECT COUNT(*) FROM clientes")
+    total_clientes = c.fetchone()[0]
+
+    # Vendas por dia (últimos 7 dias)
+    vendas_semana = []
+    for i in range(6, -1, -1):
+        dia = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+        c.execute("SELECT COALESCE(SUM(total),0), COUNT(*) FROM vendas WHERE criado_em LIKE ?", (dia+'%',))
+        row = c.fetchone()
+        vendas_semana.append({'dia': dia, 'total': round(row[0], 2), 'qtd': row[1]})
+
+    # Categorias mais vendidas
+    c.execute("SELECT categoria, COUNT(*) as qtd FROM produtos GROUP BY categoria ORDER BY qtd DESC LIMIT 6")
+    categorias = [{'categoria': r[0], 'qtd': r[1]} for r in c.fetchall()]
+
+    # Produtos com estoque baixo
+    c.execute("SELECT nome, estoque, estoque_minimo FROM produtos WHERE estoque <= estoque_minimo ORDER BY estoque ASC LIMIT 5")
+    alertas = [{'nome': r[0], 'estoque': r[1], 'minimo': r[2]} for r in c.fetchall()]
+
+    conn.close()
+    return jsonify({
+        'vendas_hoje': round(vendas_hoje, 2),
+        'vendas_mes': round(vendas_mes, 2),
+        'num_vendas_hoje': num_vendas_hoje,
+        'estoque_baixo': estoque_baixo,
+        'total_produtos': total_produtos,
+        'total_clientes': total_clientes,
+        'vendas_semana': vendas_semana,
+        'categorias': categorias,
+        'alertas_estoque': alertas
+    })
+
+
 
