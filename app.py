@@ -187,4 +187,26 @@ def criar_produto():
     conn.close()
     return jsonify({'id': produto_id, 'mensagem': 'Produto criado com sucesso!'})
 
+@app.route('/api/produtos/<int:id>', methods=['PUT'])
+def atualizar_produto(id):
+    data = request.json
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('''UPDATE produtos SET nome=?, categoria=?, preco=?, estoque=?, estoque_minimo=?, unidade=?
+                 WHERE id=?''',
+              (data['nome'], data['categoria'], data['preco'], data['estoque'],
+               data.get('estoque_minimo', 10), data.get('unidade', 'un'), id))
+    conn.commit()
+    conn.close()
+    return jsonify({'mensagem': 'Produto atualizado!'})
+
+@app.route('/api/produtos/<int:id>', methods=['DELETE'])
+def deletar_produto(id):
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('DELETE FROM produtos WHERE id=?', (id,))
+    conn.commit()
+    conn.close()
+    return jsonify({'mensagem': 'Produto removido!'})
+
 
