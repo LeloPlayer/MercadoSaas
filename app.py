@@ -153,6 +153,7 @@ def dashboard():
         'alertas_estoque': alertas
     })
 
+# ---- PRODUTOS ----
 @app.route('/api/produtos', methods=['GET'])
 def listar_produtos():
     conn = get_db()
@@ -239,5 +240,26 @@ def registrar_venda():
     conn.commit()
     conn.close()
     return jsonify({'mensagem': 'Venda registrada!', 'total': round(total, 2)})
+
+# ---- CLIENTES ----
+@app.route('/api/clientes', methods=['GET'])
+def listar_clientes():
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('SELECT * FROM clientes ORDER BY nome ASC')
+    clientes = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return jsonify(clientes)
+
+@app.route('/api/clientes', methods=['POST'])
+def criar_cliente():
+    data = request.json
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('INSERT INTO clientes (nome, telefone, email) VALUES (?,?,?)',
+              (data['nome'], data.get('telefone', ''), data.get('email', '')))
+    conn.commit()
+    conn.close()
+    return jsonify({'mensagem': 'Cliente cadastrado!'})
 
 
