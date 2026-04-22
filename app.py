@@ -262,4 +262,22 @@ def criar_cliente():
     conn.close()
     return jsonify({'mensagem': 'Cliente cadastrado!'})
 
+# ---- CATEGORIAS ----
+@app.route('/api/categorias')
+def listar_categorias():
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('SELECT DISTINCT categoria FROM produtos ORDER BY categoria')
+    cats = [r[0] for r in c.fetchall()]
+    conn.close()
+    return jsonify(cats)
+
+@app.route('/')
+def index():
+    return send_from_directory('static', 'index.html')
+
+if __name__ == '__main__':
+    init_db()
+    app.run(debug=True, port=5000)
+
 
