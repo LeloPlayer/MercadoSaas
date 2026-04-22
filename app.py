@@ -209,4 +209,35 @@ def deletar_produto(id):
     conn.close()
     return jsonify({'mensagem': 'Produto removido!'})
 
+# ---- VENDAS ----
+@app.route('/api/vendas', methods=['GET'])
+def listar_vendas():
+    conn = get_db()
+    c = conn.cursor()
+    limit = int(request.args.get('limit', 20))
+    c.execute('SELECT * FROM vendas ORDER BY criado_em DESC LIMIT ?', (limit,))
+    vendas = []
+    for r in c.fetchall():
+        v = dict(r)
+        v['itens'] = json.loads(v['itens'])
+        vendas.append(v)
+    conn.close()
+    return jsonify(vendas)
+
+@app.route('/api/vendas', methods=['POST'])
+def registrar_venda():
+    data = request.json
+    conn = get_db()
+    c = conn.cursor()
+    itens = data['itens']
+    total = sum(i['qtd'] * i['preco'] for i in itens)
+    c.execute('INSERT INTO vendas (total, itens, forma_pagamento) VALUES (?,?,?)',
+              (round(total, 2), json.dumps(itens), data.get('forma_pagamento', 'dinheiro')))
+    # Atualiza estoque
+    for item in itens:
+        c.execute('UPDATE produtos SET estoque = estoque - ? WHERE id = ?', (item['qtd'], item['produto_id']))
+    conn.commit()
+    conn.close()
+    return jsonify({'mensagem': 'Venda registrada!', 'total': round(total, 2)})
+
 
