@@ -87,7 +87,93 @@
       text-transform: uppercase;
       color: var(--muted);
     }
-    
+
+    .nav {
+      flex: 1;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all .2s;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: var(--bg3);
+      color: var(--texto);
+    }
+
+    .nav-item.active {
+      background: rgba(29, 185, 84, .12);
+      color: var(--verde);
+    }
+
+    .nav-item .icon {
+      font-size: 18px;
+      width: 22px;
+      text-align: center;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--danger);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid var(--borda);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--verde);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .user-info {
+      font-size: 13px;
+    }
+
+    .user-info strong {
+      display: block;
+      font-weight: 600;
+    }
+
+    .user-info span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+
 
 
 
@@ -95,6 +181,55 @@
     </style>
 </head>
 <body>
-    
+    <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">🛒</div>
+      <div class="logo-text">
+        MercadoSaaS
+        <span>Gestão Inteligente</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="goTo('dashboard', this)">
+        <span class="icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="goTo('pdv', this)">
+        <span class="icon">💳</span> PDV — Caixa
+      </div>
+      <div class="nav-item" onclick="goTo('produtos', this)">
+        <span class="icon">📦</span> Produtos
+      </div>
+      <div class="nav-item" onclick="goTo('vendas', this)">
+        <span class="icon">🧾</span> Vendas
+      </div>
+      <div class="nav-item" onclick="goTo('clientes', this)">
+        <span class="icon">👥</span> Clientes
+      </div>
+      <div class="nav-item" onclick="goTo('estoque', this)" id="nav-estoque">
+        <span class="icon">⚠️</span> Estoque
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">M</div>
+        <div class="user-info">
+          <strong>Mercadinho do Zé</strong>
+          <span>Plano Pro ✨</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title" id="page-title">📊 Dashboard</div>
+      <div class="topbar-right">
+        <span id="clock" style="color: var(--muted); font-size: 14px;"></span>
+        <button class="btn btn-primary" id="topbar-action" onclick="topbarAction()">+ Novo</button>
+      </div>
+    </div>
+
 </body>
 </html>
