@@ -251,6 +251,12 @@
       padding: 6px 13px;
       font-size: 13px;
     }
+
+    /* ─── CONTENT ─── */
+    .content {
+      padding: 28px 32px;
+    }
+
     
 
 
@@ -310,6 +316,42 @@
         <button class="btn btn-primary" id="topbar-action" onclick="topbarAction()">+ Novo</button>
       </div>
     </div>
+
+    <div class="content"></div>
+
+    <!-- ── DASHBOARD ── -->
+      <div class="page active" id="page-dashboard">
+        <div class="metrics" id="metrics"></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📈 Vendas — Últimos 7 dias</div>
+            </div>
+            <div class="bar-chart" id="bar-chart"></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚠️ Alertas de Estoque</div>
+            </div>
+            <div class="alert-list" id="alertas-list"></div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📂 Produtos por Categoria</div>
+            </div>
+            <div class="donut-wrap" id="categorias-chart"></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">💡 Resumo Rápido</div>
+            </div>
+            <div id="resumo-rapido" style="font-size: 14px; display: flex; flex-direction: column; gap: 12px;"></div>
+          </div>
+        </div>
+      </div>
+      
 
 </body>
 </html>
