@@ -351,6 +351,54 @@
           </div>
         </div>
       </div>
+
+      <!-- ── PDV ── -->
+      <div class="page" id="page-pdv">
+        <div style="margin-bottom: 14px; display: flex; gap: 12px; align-items: center;">
+          <div class="search-box" style="flex: 1;">
+            <input type="text" placeholder="Buscar produto por nome ou código…" id="pdv-search" oninput="renderPdvProdutos()">
+          </div>
+          <select id="pdv-cat" onchange="renderPdvProdutos()" style="width: auto;">
+            <option value="">Todas categorias</option>
+          </select>
+        </div>
+        <div class="pdv-grid">
+          <div class="pdv-produtos" id="pdv-produtos"></div>
+          <div class="pdv-cart">
+            <div class="cart-header">
+              <div class="cart-title">🛒 Carrinho</div>
+            </div>
+            <div class="cart-items" id="cart-items">
+              <div class="empty">
+                <span>🛍️</span>
+                Nenhum item adicionado
+              </div>
+            </div>
+            <div class="cart-footer">
+              <div class="cart-total">
+                <span class="cart-total-label">Total</span>
+                <span class="cart-total-val" id="cart-total">R$ 0,00</span>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <label style="font-size: 13px; color: var(--muted);">Forma de pagamento</label>
+                <select id="pagamento" style="margin-top: 4px;">
+                  <option value="dinheiro">💵 Dinheiro</option>
+                  <option value="pix">📱 PIX</option>
+                  <option value="cartao_debito">💳 Cartão Débito</option>
+                  <option value="cartao_credito">💳 Cartão Crédito</option>
+                </select>
+              </div>
+              <button class="btn btn-primary" style="width: 100%; justify-content: center; font-size: 15px; padding: 13px;" onclick="finalizarVenda()">
+                ✅ Finalizar Venda
+              </button>
+              <button class="btn btn-ghost btn-sm" style="width: 100%; justify-content: center; margin-top: 8px;" onclick="limparCart()">
+                🗑️ Limpar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       
 
 </body>
