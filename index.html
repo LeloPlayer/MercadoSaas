@@ -319,6 +319,41 @@
       opacity: .18;
     }
     
+    /* ─── GRID DE CONTEÚDO ─── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--borda);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+
 
     
 
@@ -461,6 +496,37 @@
           </div>
         </div>
       </div>
+
+      <!-- ── PRODUTOS ── -->
+      <div class="page" id="page-produtos">
+        <div style="display: flex; gap: 12px; margin-bottom: 18px; align-items: center;">
+          <div class="search-box" style="flex: 1;">
+            <input type="text" placeholder="Buscar produto…" id="prod-search" oninput="loadProdutos()">
+          </div>
+          <select id="prod-cat-filter" onchange="loadProdutos()" style="width: auto;">
+            <option value="">Todas categorias</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Produto</th>
+                  <th>Categoria</th>
+                  <th>Preço</th>
+                  <th>Estoque</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="produtos-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
 
       
 
