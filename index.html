@@ -353,6 +353,47 @@
       font-weight: 700;
     }
 
+    /* ─── GRÁFICO DE BARRAS ─── */
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 110px;
+    }
+
+    .bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .bar {
+      width: 100%;
+      background: rgba(29, 185, 84, .2);
+      border-radius: 5px 5px 0 0;
+      position: relative;
+      transition: all .5s cubic-bezier(.34, 1.56, .64, 1);
+      cursor: pointer;
+    }
+
+    .bar:hover {
+      background: var(--verde);
+    }
+
+    .bar-label {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .bar-val {
+      font-size: 10px;
+      color: var(--texto);
+      font-weight: 600;
+    }
+
+
 
 
     
@@ -526,7 +567,31 @@
           </div>
         </div>
       </div>
-      
+
+      <!-- ── VENDAS ── -->
+      <div class="page" id="page-vendas">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🧾 Histórico de Vendas</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Data</th>
+                  <th>Itens</th>
+                  <th>Pagamento</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="vendas-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
 
       
 
