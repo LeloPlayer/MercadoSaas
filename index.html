@@ -461,7 +461,45 @@
       background: rgba(62, 207, 207, .15);
       color: var(--info);
     }
+
+    /* ─── ALERTAS ─── */
+    .alert-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .alert-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: rgba(255, 71, 87, .07);
+      border: 1px solid rgba(255, 71, 87, .2);
+      border-radius: 9px;
+      font-size: 13px;
+    }
+
+    .alert-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--danger);
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: .3;
+      }
+    }
+
     
+
 
 
 
@@ -682,6 +720,33 @@
           </div>
         </div>
       </div>
+
+      <!-- ── ESTOQUE ── -->
+      <div class="page" id="page-estoque">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⚠️ Produtos com Estoque Baixo</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Categoria</th>
+                  <th>Estoque Atual</th>
+                  <th>Estoque Mínimo</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="estoque-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+
 
 
 
