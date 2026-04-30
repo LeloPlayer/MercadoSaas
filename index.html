@@ -498,7 +498,58 @@
       }
     }
 
+    /* ─── FORMULÁRIOS ─── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    input,
+    select,
+    textarea {
+      background: var(--bg3);
+      border: 1px solid var(--borda);
+      border-radius: 8px;
+      color: var(--texto);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 10px 14px;
+      transition: border-color .2s;
+      width: 100%;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--verde);
+    }
+
+    select option {
+      background: var(--bg3);
+    }
+
     
+
+
 
 
 
