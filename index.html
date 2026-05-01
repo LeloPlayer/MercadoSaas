@@ -821,7 +821,65 @@
       text-align: right;
     }
 
+    /* ─── PAGES ─── */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ─── SEARCH ─── */
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      padding-left: 38px;
+    }
+
+    .search-box::before {
+      content: '🔍';
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    /* ─── TOAST ─── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--bg3);
+      border: 1px solid var(--verde);
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+      z-index: 999;
+      animation: slideIn .3s ease;
+      color: var(--verde);
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(60px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
     
+
+
 
 
 
