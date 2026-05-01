@@ -1245,7 +1245,47 @@
 
   <div id="toast"></div>
 
+  <script>
+    const API = 'http://localhost:5000/api';
+    let produtosCache = [];
+    let cart = [];
+    let currentPage = 'dashboard';
 
+    // ─── NAVEGAÇÃO ───
+    function goTo(page, el) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      if (el) el.classList.add('active');
+      currentPage = page;
+      const titles = {
+        dashboard: '📊 Dashboard',
+        pdv: '💳 PDV — Caixa',
+        produtos: '📦 Produtos',
+        vendas: '🧾 Vendas',
+        clientes: '👥 Clientes',
+        estoque: '⚠️ Estoque'
+      };
+      document.getElementById('page-title').textContent = titles[page] || page;
+      loadPage(page);
+    }
+
+    function topbarAction() {
+      if (currentPage === 'produtos') openModalProduto();
+      else if (currentPage === 'clientes') document.getElementById('modal-cliente').classList.add('open');
+      else goTo('pdv', document.querySelectorAll('.nav-item')[1]);
+    }
+
+    function loadPage(page) {
+      if (page === 'dashboard') loadDashboard();
+      else if (page === 'pdv') loadPdv();
+      else if (page === 'produtos') loadProdutos();
+      else if (page === 'vendas') loadVendas();
+      else if (page === 'clientes') loadClientes();
+      else if (page === 'estoque') loadEstoque();
+    }
+
+    
 
 
 
