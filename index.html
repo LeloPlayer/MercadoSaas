@@ -1596,7 +1596,57 @@
       loadProdutos();
     }
 
+    // ─── VENDAS ───
+    async function loadVendas() {
+      try {
+        const vendas = await fetch(API + '/vendas?limit=50').then(r => r.json());
+        const pagLabel = { 'dinheiro': '💵 Dinheiro', 'pix': '📱 PIX', 'cartao_debito': '💳 Débito', 'cartao_credito': '💳 Crédito' };
+        document.getElementById('vendas-tbody').innerHTML = vendas.map(v => `
+          <tr>
+            <td style="color:var(--muted);font-size:12px">#${v.id}</td>
+            <td>${new Date(v.criado_em).toLocaleString('pt-BR')}</td>
+            <td>${v.itens.length} iten(s)</td>
+            <td><span class="badge badge-blue">${pagLabel[v.forma_pagamento] || v.forma_pagamento}</span></td>
+            <td style="color:var(--verde);font-weight:700">${fmt(v.total)}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="5" class="empty">Nenhuma venda registrada</td></tr>';
+      } catch (e) {}
+    }
+
+    // ─── CLIENTES ───
+    async function loadClientes() {
+      try {
+        const clientes = await fetch(API + '/clientes').then(r => r.json());
+        document.getElementById('clientes-tbody').innerHTML = clientes.map(c => `
+          <tr>
+            <td><strong>${c.nome}</strong></td>
+            <td>${c.telefone || '—'}</td>
+            <td>${c.email || '—'}</td>
+            <td><span class="badge badge-yellow">⭐ ${c.pontos} pts</span></td>
+          </tr>
+        `).join('');
+      } catch (e) {}
+    }
+
+    async function salvarCliente() {
+      const body = {
+        nome: document.getElementById('c-nome').value,
+        telefone: document.getElementById('c-tel').value,
+        email: document.getElementById('c-email').value,
+      };
+      if (!body.nome) {
+        toast('Nome obrigatório!', false);
+        return;
+      }
+      await fetch(API + '/clientes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      toast('Cliente cadastrado!');
+      closeModal('modal-cliente');
+      loadClientes();
+    }
+
     
+
+
 
 
 
