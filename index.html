@@ -1509,7 +1509,96 @@
       }
     }
 
+    // ─── PRODUTOS ───
+    async function loadProdutos() {
+      const busca = document.getElementById('prod-search')?.value || '';
+      const cat = document.getElementById('prod-cat-filter')?.value || '';
+      try {
+        const [prods, cats] = await Promise.all([
+          fetch(API + `/produtos?busca=${encodeURIComponent(busca)}&categoria=${encodeURIComponent(cat)}`).then(r => r.json()),
+          fetch(API + '/categorias').then(r => r.json())
+        ]);
+        const sel = document.getElementById('prod-cat-filter');
+        const cur = sel.value;
+        sel.innerHTML = '<option value="">Todas categorias</option>' + cats.map(c => `<option value="${c}" ${c === cur ? 'selected' : ''}>${c}</option>`).join('');
+        const dl = document.getElementById('cat-list');
+        if (dl) dl.innerHTML = cats.map(c => `<option value="${c}">`).join('');
+
+        document.getElementById('produtos-tbody').innerHTML = prods.map(p => {
+          const baixo = p.estoque <= p.estoque_minimo;
+          const status = baixo
+            ? `<span class="badge badge-red">⚠️ Baixo</span>`
+            : `<span class="badge badge-green">✅ OK</span>`;
+          return `<tr>
+            <td><span style="font-size:12px;color:var(--muted);font-family:monospace">${p.codigo || '—'}</span></td>
+            <td><strong>${p.nome}</strong></td>
+            <td><span class="badge badge-blue">${p.categoria}</span></td>
+            <td style="color:var(--verde);font-weight:700">${fmt(p.preco)}</td>
+            <td>${p.estoque} ${p.unidade}</td>
+            <td>${status}</td>
+            <td>
+              <button class="btn btn-ghost btn-sm" onclick='editProduto(${JSON.stringify(p)})'>✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteProduto(${p.id})">🗑️</button>
+            </td>
+          </tr>`;
+        }).join('') || '<tr><td colspan="7" class="empty">Nenhum produto encontrado</td></tr>';
+      } catch (e) {}
+    }
+
+    function openModalProduto(p = null) {
+      document.getElementById('p-id').value = p?.id || '';
+      document.getElementById('p-nome').value = p?.nome || '';
+      document.getElementById('p-codigo').value = p?.codigo || '';
+      document.getElementById('p-categoria').value = p?.categoria || '';
+      document.getElementById('p-unidade').value = p?.unidade || 'un';
+      document.getElementById('p-preco').value = p?.preco || '';
+      document.getElementById('p-estoque').value = p?.estoque || '';
+      document.getElementById('p-estoque-min').value = p?.estoque_minimo || 10;
+      document.getElementById('modal-prod-title').textContent = p ? 'Editar Produto' : 'Novo Produto';
+      document.getElementById('modal-produto').classList.add('open');
+    }
+
+    function editProduto(p) {
+      openModalProduto(p);
+    }
+
+    async function salvarProduto() {
+      const id = document.getElementById('p-id').value;
+      const body = {
+        nome: document.getElementById('p-nome').value,
+        codigo: document.getElementById('p-codigo').value,
+        categoria: document.getElementById('p-categoria').value,
+        unidade: document.getElementById('p-unidade').value,
+        preco: parseFloat(document.getElementById('p-preco').value),
+        estoque: parseInt(document.getElementById('p-estoque').value),
+        estoque_minimo: parseInt(document.getElementById('p-estoque-min').value),
+      };
+      if (!body.nome || !body.categoria || isNaN(body.preco) || isNaN(body.estoque)) {
+        toast('Preencha todos os campos obrigatórios!', false);
+        return;
+      }
+      try {
+        const url = id ? `${API}/produtos/${id}` : `${API}/produtos`;
+        const method = id ? 'PUT' : 'POST';
+        await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        toast(id ? 'Produto atualizado!' : 'Produto criado!');
+        closeModal('modal-produto');
+        loadProdutos();
+      } catch (e) {
+        toast('Erro ao salvar', false);
+      }
+    }
+
+    async function deleteProduto(id) {
+      if (!confirm('Remover produto?')) return;
+      await fetch(`${API}/produtos/${id}`, { method: 'DELETE' });
+      toast('Produto removido!');
+      loadProdutos();
+    }
+
     
+
+
 
 
 
