@@ -1285,6 +1285,27 @@
       else if (page === 'estoque') loadEstoque();
     }
 
+    // ─── CLOCK ───
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent =
+        now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' · ' +
+        now.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // ─── TOAST ───
+    function toast(msg, ok = true) {
+      const t = document.getElementById('toast');
+      t.textContent = (ok ? '✅ ' : '❌ ') + msg;
+      t.style.display = 'block';
+      t.style.borderColor = ok ? 'var(--verde)' : 'var(--danger)';
+      t.style.color = ok ? 'var(--verde)' : 'var(--danger)';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
+
+
     
 
     </script>
