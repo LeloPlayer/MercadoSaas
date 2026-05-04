@@ -1305,6 +1305,102 @@
       setTimeout(() => t.style.display = 'none', 3000);
     }
 
+     // ─── MODAL ───
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // ─── DASHBOARD ───
+    async function loadDashboard() {
+      try {
+        const data = await fetch(API + '/dashboard').then(r => r.json());
+
+        // Métricas
+        const cores = ['var(--verde)', 'var(--info)', 'var(--laranja)', 'var(--danger)'];
+        const metrics = [
+          { label: 'Vendas Hoje', value: fmt(data.vendas_hoje), sub: `${data.num_vendas_hoje} transações`, icon: '💰', cor: cores[0] },
+          { label: 'Vendas no Mês', value: fmt(data.vendas_mes), sub: 'Mês atual', icon: '📅', cor: cores[1] },
+          { label: 'Total de Produtos', value: data.total_produtos, sub: 'Cadastrados', icon: '📦', cor: cores[2] },
+          { label: 'Alertas Estoque', value: data.estoque_baixo, sub: 'Abaixo do mínimo', icon: '⚠️', cor: cores[3] },
+        ];
+
+        // Badge no menu estoque
+        const nb = document.getElementById('nav-estoque');
+        if (data.estoque_baixo > 0) {
+          if (!nb.querySelector('.nav-badge')) {
+            const badge = document.createElement('span');
+            badge.className = 'nav-badge';
+            badge.id = 'estoque-badge';
+            nb.appendChild(badge);
+          }
+          nb.querySelector('.nav-badge').textContent = data.estoque_baixo;
+        }
+
+        document.getElementById('metrics').innerHTML = metrics.map(m => `
+          <div class="metric-card" style="--accent:${m.cor}">
+            <div class="metric-label">${m.label}</div>
+            <div class="metric-value">${typeof m.value === 'number' ? m.value : m.value}</div>
+            <div class="metric-sub">${m.sub}</div>
+            <div class="metric-icon">${m.icon}</div>
+          </div>
+        `).join('');
+
+        // Gráfico barras
+        const maxVal = Math.max(...data.vendas_semana.map(v => v.total), 1);
+        document.getElementById('bar-chart').innerHTML = data.vendas_semana.map(v => {
+          const h = Math.max(8, (v.total / maxVal) * 100);
+          const dia = new Date(v.dia + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short' });
+          return `<div class="bar-wrap">
+            <span class="bar-val">${v.total > 0 ? fmt(v.total).replace('R$', '') : ''}</span>
+            <div class="bar" style="height:${h}px" title="${fmt(v.total)}"></div>
+            <span class="bar-label">${dia}</span>
+          </div>`;
+        }).join('');
+
+        // Alertas
+        const al = document.getElementById('alertas-list');
+        if (data.alertas_estoque.length === 0) {
+          al.innerHTML = '<div class="empty"><span>✅</span>Estoque ok!</div>';
+        } else {
+          al.innerHTML = data.alertas_estoque.map(a =>
+            `<div class="alert-item"><div class="alert-dot"></div><div><strong>${a.nome}</strong><br><span style="font-size:12px;color:var(--muted)">${a.estoque} restantes (mín: ${a.minimo})</span></div></div>`
+          ).join('');
+        }
+
+        // Categorias
+        const maxCat = Math.max(...data.categorias.map(c => c.qtd), 1);
+        const catColors = ['#1db954', '#3ecfcf', '#ff6b35', '#f9c846', '#a78bfa', '#fb7185'];
+        document.getElementById('categorias-chart').innerHTML = data.categorias.map((c, i) => `
+          <div class="donut-item">
+            <div class="donut-dot" style="background:${catColors[i % catColors.length]}"></div>
+            <div class="donut-label">${c.categoria}</div>
+            <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:${(c.qtd / maxCat) * 100}%;background:${catColors[i % catColors.length]}"></div></div>
+            <div class="donut-val">${c.qtd}</div>
+          </div>
+        `).join('');
+
+        // Resumo
+        const pagLabel = { 'dinheiro': 'Dinheiro', 'pix': 'PIX', 'cartao_debito': 'Débito', 'cartao_credito': 'Crédito' };
+        document.getElementById('resumo-rapido').innerHTML = `
+          <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg3);border-radius:8px;">
+            <span>🏪 Clientes cadastrados</span><strong>${data.total_clientes}</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg3);border-radius:8px;">
+            <span>📦 Total produtos</span><strong>${data.total_produtos}</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px;background:rgba(255,71,87,.07);border-radius:8px;">
+            <span>⚠️ Itens com estoque baixo</span><strong style="color:var(--danger)">${data.estoque_baixo}</strong>
+          </div>
+          <div style="color:var(--muted);font-size:12px;text-align:center;padding-top:4px;">Última atualização: ${new Date().toLocaleTimeString('pt-BR')}</div>
+        `;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+
+    
+
 
     
 
