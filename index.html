@@ -1644,28 +1644,32 @@
       loadClientes();
     }
 
-    
+    // ─── ESTOQUE ───
+    async function loadEstoque() {
+      try {
+        const prods = await fetch(API + '/produtos').then(r => r.json());
+        const baixo = prods.filter(p => p.estoque <= p.estoque_minimo);
+        document.getElementById('estoque-tbody').innerHTML = baixo.map(p => {
+          const pct = p.estoque / p.estoque_minimo;
+          const cor = pct <= 0.3 ? 'var(--danger)' : pct <= 0.7 ? 'var(--laranja)' : 'var(--amarelo)';
+          return `<tr>
+            <td><strong>${p.nome}</strong></td>
+            <td><span class="badge badge-blue">${p.categoria}</span></td>
+            <td style="color:${cor};font-weight:700">${p.estoque} ${p.unidade}</td>
+            <td>${p.estoque_minimo}</td>
+            <td>${pct <= 0.3 ? '<span class="badge badge-red">🔴 Crítico</span>' : '<span class="badge badge-orange">🟡 Alerta</span>'}</td>
+          </tr>`;
+        }).join('') || '<tr><td colspan="5" class="empty" style="text-align:center">✅ Todos os produtos têm estoque adequado</td></tr>';
+      } catch (e) {}
+    }
 
+    // ─── UTIL ───
+    function fmt(v) {
+      return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
 
-
-
-
-
-
-
-
-    
-
-    </script>
-
-
-
-
-
-
-
-
-      
-
+    // ─── INIT ───
+    loadDashboard();
+  </script>
 </body>
 </html>
